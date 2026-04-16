@@ -63,6 +63,8 @@ as Tailwind class names (`bg-bg`, `text-accent`, `border-border-hi`).
 
 ## Deploy
 
+Deployment note: production deploys are expected from pushes to `master` via Vercel.
+
 ### Vercel (recommended)
 
 ```bash
