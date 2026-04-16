@@ -17,13 +17,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
   Plus,
-  Lightbulb,
-  Paperclip,
   FileText,
   Trash2,
-  ChevronDown,
-  Check,
-  Zap,
   Github,
   SendHorizontal,
   Sparkles,
@@ -37,15 +32,6 @@ const API_BASE =
   "https://kelvin-programmer-rag-chatbot.hf.space";
 const API = `${API_BASE}/api/v1`;
 
-// ---------- types ----------
-interface Model {
-  id: string;
-  name: string;
-  description: string;
-  icon: React.ReactNode;
-  badge?: string;
-}
-
 interface SourceChunk {
   text: string;
   score: number;
@@ -57,89 +43,6 @@ interface Message {
   content: string;
   sources?: SourceChunk[];
   pending?: boolean;
-}
-
-// ---------- models ----------
-const models: Model[] = [
-  {
-    id: "flan-t5-small",
-    name: "flan-t5-small",
-    description: "Fast · 300MB · pre-loaded",
-    icon: <Zap className="size-4 text-accent" />,
-    badge: "Default",
-  },
-];
-
-function ModelSelector() {
-  const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState<Model>(models[0]);
-  return (
-    <div className="relative">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-medium text-ink-dim transition-colors hover:bg-surface-2 hover:text-ink"
-      >
-        {selected.icon}
-        <span>{selected.name}</span>
-        <ChevronDown
-          className={cn(
-            "size-3.5 transition-transform duration-150",
-            open && "rotate-180",
-          )}
-        />
-      </button>
-      {open && (
-        <>
-          <div
-            className="fixed inset-0 z-40"
-            onClick={() => setOpen(false)}
-          />
-          <div className="absolute bottom-full left-0 z-50 mb-2 min-w-[240px] overflow-hidden rounded-md border border-border bg-surface-2 shadow-xl animate-slide-up">
-            <div className="p-1.5">
-              <div className="px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-ink-mute">
-                Select model
-              </div>
-              {models.map((m) => (
-                <button
-                  key={m.id}
-                  type="button"
-                  onClick={() => {
-                    setSelected(m);
-                    setOpen(false);
-                  }}
-                  className={cn(
-                    "flex w-full items-center gap-3 rounded-sm px-2.5 py-2 text-left transition-colors",
-                    selected.id === m.id
-                      ? "bg-surface text-ink"
-                      : "text-ink-dim hover:bg-surface hover:text-ink",
-                  )}
-                >
-                  <div className="flex-shrink-0">{m.icon}</div>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium">{m.name}</span>
-                      {m.badge && (
-                        <span className="rounded-full border border-accent px-1.5 py-0.5 text-[10px] font-medium text-accent">
-                          {m.badge}
-                        </span>
-                      )}
-                    </div>
-                    <span className="text-[11px] text-ink-mute">
-                      {m.description}
-                    </span>
-                  </div>
-                  {selected.id === m.id && (
-                    <Check className="size-4 flex-shrink-0 text-accent" />
-                  )}
-                </button>
-              ))}
-            </div>
-          </div>
-        </>
-      )}
-    </div>
-  );
 }
 
 // ---------- attach menu ----------
@@ -159,7 +62,8 @@ function AttachMenu({
           e.stopPropagation();
           setOpen((v) => !v);
         }}
-        className="flex size-8 items-center justify-center rounded-full bg-surface-2 text-ink-dim transition-colors hover:bg-border hover:text-ink"
+        aria-label="Open document actions"
+        className="focus-ring flex size-8 items-center justify-center rounded-full bg-surface-2 text-ink-dim transition-colors hover:bg-border hover:text-ink"
       >
         <Plus
           className={cn(
@@ -182,7 +86,7 @@ function AttachMenu({
                   onUpload();
                   setOpen(false);
                 }}
-                className="flex w-full items-center gap-3 rounded-sm px-3 py-2 text-ink-dim transition-colors hover:bg-surface hover:text-ink"
+                className="focus-ring flex w-full items-center gap-3 rounded-sm px-3 py-2 text-ink-dim transition-colors hover:bg-surface hover:text-ink"
               >
                 <FileText className="size-4 text-accent" />
                 <span className="text-sm">Upload PDF</span>
@@ -193,7 +97,7 @@ function AttachMenu({
                   onClear();
                   setOpen(false);
                 }}
-                className="flex w-full items-center gap-3 rounded-sm px-3 py-2 text-ink-dim transition-colors hover:bg-surface hover:text-ink"
+                className="focus-ring flex w-full items-center gap-3 rounded-sm px-3 py-2 text-ink-dim transition-colors hover:bg-surface hover:text-ink"
               >
                 <Trash2 className="size-4" />
                 <span className="text-sm">Clear documents</span>
@@ -244,9 +148,13 @@ function ChatInput({
 
   return (
     <div className="relative mx-auto w-full max-w-[700px]">
-      <div className="rounded-lg border border-border bg-surface transition-colors focus-within:border-accent">
+      <div className="rounded-lg border border-border bg-surface transition-colors focus-within:border-accent focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2 focus-within:ring-offset-bg">
         <textarea
           ref={textareaRef}
+          aria-label="Ask a question about your documents"
+          autoComplete="off"
+          enterKeyHint="send"
+          name="question"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={(e) => {
@@ -261,20 +169,12 @@ function ChatInput({
         />
         <div className="flex flex-wrap items-center gap-2 px-3 pb-3 pt-1">
           <AttachMenu onUpload={onUpload} onClear={onClear} />
-          <ModelSelector />
           <div className="flex-1" />
-          <button
-            type="button"
-            className="hidden items-center gap-1.5 rounded-full px-3 py-2 text-xs font-medium text-ink-mute transition-colors hover:bg-surface-2 hover:text-ink sm:inline-flex"
-          >
-            <Lightbulb className="size-4" />
-            Plan
-          </button>
           <button
             type="button"
             onClick={submit}
             disabled={!message.trim()}
-            className="flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-sm font-semibold text-white transition-[filter] hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:brightness-100"
+            className="focus-ring flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-sm font-semibold text-white transition-[filter] hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:brightness-100"
           >
             <span>Ask</span>
             <SendHorizontal className="size-4" />
@@ -292,7 +192,7 @@ function Announcement() {
       href="https://github.com/kelvinasiedu-programmer/rag-chatbot-web"
       target="_blank"
       rel="noopener noreferrer"
-      className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-xs text-ink-dim transition-colors hover:border-accent hover:text-ink"
+      className="focus-ring inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-xs text-ink-dim transition-colors hover:border-accent hover:text-ink"
     >
       <Sparkles className="size-3.5 text-accent" />
       <span>Introducing RAG Chatbot — Next.js edition</span>
@@ -304,11 +204,11 @@ function Announcement() {
 function ImportButtons({ onUpload }: { onUpload: () => void }) {
   return (
     <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-      <span className="text-sm text-ink-mute">or import from</span>
+      <span className="text-sm text-ink-mute">Quick start</span>
       <button
         type="button"
         onClick={onUpload}
-        className="inline-flex items-center gap-1.5 rounded-full border border-border bg-bg px-3 py-1.5 text-xs font-medium text-ink-dim transition-colors hover:border-accent hover:text-ink"
+        className="focus-ring inline-flex items-center gap-1.5 rounded-full border border-border bg-bg px-3 py-1.5 text-xs font-medium text-ink-dim transition-colors hover:border-accent hover:text-ink"
       >
         <Upload className="size-3.5" />
         PDF
@@ -317,7 +217,7 @@ function ImportButtons({ onUpload }: { onUpload: () => void }) {
         href="https://github.com/kelvinasiedu-programmer/rag-chatbot"
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center gap-1.5 rounded-full border border-border bg-bg px-3 py-1.5 text-xs font-medium text-ink-dim transition-colors hover:border-accent hover:text-ink"
+        className="focus-ring inline-flex items-center gap-1.5 rounded-full border border-border bg-bg px-3 py-1.5 text-xs font-medium text-ink-dim transition-colors hover:border-accent hover:text-ink"
       >
         <Github className="size-3.5" />
         API repo
@@ -569,7 +469,7 @@ export function BoltStyleChat() {
             href={`${API_BASE}/docs`}
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-sm px-3 py-1.5 text-xs text-ink-dim transition-colors hover:bg-surface hover:text-ink"
+            className="focus-ring rounded-sm px-3 py-1.5 text-xs text-ink-dim transition-colors hover:bg-surface hover:text-ink"
           >
             API
           </a>
@@ -577,7 +477,7 @@ export function BoltStyleChat() {
             href="https://github.com/kelvinasiedu-programmer/rag-chatbot-web"
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-sm px-3 py-1.5 text-xs text-ink-dim transition-colors hover:bg-surface hover:text-ink"
+            className="focus-ring rounded-sm px-3 py-1.5 text-xs text-ink-dim transition-colors hover:bg-surface hover:text-ink"
           >
             GitHub
           </a>
@@ -585,7 +485,7 @@ export function BoltStyleChat() {
             type="button"
             onClick={resetConversation}
             disabled={!inConversation}
-            className="rounded-sm px-3 py-1.5 text-xs text-ink-dim transition-colors hover:bg-surface hover:text-ink disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-ink-dim"
+            className="focus-ring rounded-sm px-3 py-1.5 text-xs text-ink-dim transition-colors hover:bg-surface hover:text-ink disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-ink-dim"
           >
             New chat
           </button>
@@ -619,7 +519,7 @@ export function BoltStyleChat() {
             <strong className="font-semibold text-ink">
               {stats?.total_documents ?? 0}
             </strong>
-            <span>chunks</span>
+            <span>documents</span>
           </div>
         </section>
       ) : (
@@ -644,6 +544,9 @@ export function BoltStyleChat() {
       {/* Toast */}
       {toast && (
         <div
+          aria-atomic="true"
+          aria-live="polite"
+          role="status"
           className={cn(
             "fixed bottom-7 left-1/2 z-50 -translate-x-1/2 rounded-md border border-border bg-surface px-4 py-3 text-sm text-ink animate-fade-in",
             toast.kind === "error" && "border-danger text-danger",
