@@ -26,7 +26,6 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// ---------- API wiring ----------
 const API_BASE =
   process.env.NEXT_PUBLIC_RAG_API ||
   "https://kelvin-programmer-rag-chatbot.hf.space";
@@ -45,7 +44,6 @@ interface Message {
   pending?: boolean;
 }
 
-// ---------- attach menu ----------
 function AttachMenu({
   onUpload,
   onClear,
@@ -110,7 +108,6 @@ function AttachMenu({
   );
 }
 
-// ---------- chat input ----------
 function ChatInput({
   onSend,
   onUpload,
@@ -185,7 +182,6 @@ function ChatInput({
   );
 }
 
-// ---------- announcement pill ----------
 function Announcement() {
   return (
     <a
@@ -200,7 +196,6 @@ function Announcement() {
   );
 }
 
-// ---------- import buttons ----------
 function ImportButtons({ onUpload }: { onUpload: () => void }) {
   return (
     <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
@@ -226,7 +221,6 @@ function ImportButtons({ onUpload }: { onUpload: () => void }) {
   );
 }
 
-// ---------- message bubble ----------
 function MessageBubble({ m }: { m: Message }) {
   if (m.role === "user") {
     return (
@@ -303,7 +297,6 @@ function MessageBubble({ m }: { m: Message }) {
   );
 }
 
-// ---------- main component ----------
 export function BoltStyleChat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [stats, setStats] = useState<{ total_documents: number } | null>(null);
