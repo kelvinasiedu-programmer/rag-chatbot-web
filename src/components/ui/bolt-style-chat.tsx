@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * BoltStyleChat — adapted from the Bolt chat reference component.
+ * BoltStyleChat: adapted from the Bolt chat reference component.
  *
  * Design rules applied:
  *   - ONE flat background color (#0F0F12)
@@ -191,7 +191,7 @@ function Announcement() {
       className="focus-ring inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-xs text-ink-dim transition-colors hover:border-accent hover:text-ink"
     >
       <Sparkles className="size-3.5 text-accent" />
-      <span>Introducing RAG Chatbot — Next.js edition</span>
+      <span>Introducing RAG Chatbot</span>
     </a>
   );
 }

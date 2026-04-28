@@ -11,7 +11,7 @@ const config: Config = {
     },
     extend: {
       colors: {
-        // Flat design system — ONE background, ONE accent.
+        // Flat design system: ONE background, ONE accent.
         // No gradients, no glass, no purple-to-blue.
         bg: "#0F0F12",
         surface: "#16161B",
