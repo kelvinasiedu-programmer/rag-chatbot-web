@@ -1,4 +1,4 @@
-# Ask 10-K — Web (Next.js + shadcn)
+# Ask 10-K: Web (Next.js + shadcn)
 
 A Next.js 14 / TypeScript / Tailwind / shadcn frontend for the
 [rag-chatbot FastAPI backend](https://github.com/kelvinasiedu-programmer/rag-chatbot).

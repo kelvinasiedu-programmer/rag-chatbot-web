@@ -15,7 +15,7 @@ const jetBrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "RAG Chatbot — Ask your documents",
+  title: "RAG Chatbot: Ask your documents",
   description:
     "Upload a PDF and ask grounded questions. Answers cite the source pages they came from.",
   icons: { icon: "/favicon.ico" },
