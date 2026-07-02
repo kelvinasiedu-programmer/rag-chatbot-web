@@ -8,6 +8,11 @@ updates:
     groups:
       npm-deps:
         patterns: ["*"]
+    # Major bumps (Next, React, Tailwind, ESLint) need a hands-on migration;
+    # take minors and patches automatically, do majors deliberately.
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: github-actions
     directory: "/"
